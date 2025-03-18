@@ -1,0 +1,20 @@
+{
+  "name": "fruit-trading-game",
+  "version": "1.0.0",
+  "description": "A simple fruit trading game where players can buy and sell fruits.",
+  "main": "src/game.ts",
+  "scripts": {
+    "start": "ts-node src/game.ts",
+    "build": "tsc",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "dependencies": {
+    "typescript": "^4.5.4",
+    "ts-node": "^10.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^16.11.7"
+  },
+  "author": "Your Name",
+  "license": "MIT"
+}
