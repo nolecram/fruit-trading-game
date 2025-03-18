@@ -19,9 +19,8 @@ Welcome to the **Fruit Trading Game**! This is a fun and interactive game where 
 
 - **Dynamic Pricing**: Fruit prices change daily with a ±20% variation.
 - **Random Events**: Special events like storms, bumper harvests, lottery wins, or taxes can influence prices or your money by ±15%.
-- **Interactive UI**: Track your money, days left, and inventory in real-time.
-- **ASCII Art**: Enjoy ASCII art representations of fruits and game status at the end of each day.
-- **Start and End Pages**: Begin the game with a starting page and conclude with a positive or negative ending page based on your performance.
+- **Interactive Console**: Track your money, days left, and inventory in real-time.
+- **Cross-Platform**: Compatible with macOS, Linux, and Windows.
 
 ---
 
@@ -35,20 +34,27 @@ Welcome to the **Fruit Trading Game**! This is a fun and interactive game where 
    ```bash
    cd fruit-trading-game
    ```
-3. Install dependencies:
+3. Create a virtual environment:
    ```bash
-   npm install
+   python3 -m venv venv
    ```
-4. Start the game:
+4. Activate the virtual environment:
+   - On macOS/Linux:
+     ```bash
+     source venv/bin/activate
+     ```
+   - On Windows:
+     ```bash
+     venv\Scripts\activate
+     ```
+5. Install dependencies:
    ```bash
-   npm start
+   pip install -r requirements.txt
    ```
-
----
-
-## Game Preview
-
-![Game Screenshot](https://via.placeholder.com/800x400?text=Game+Preview)
+6. Start the game:
+   ```bash
+   python src/game.py
+   ```
 
 ---
 
@@ -56,71 +62,47 @@ Welcome to the **Fruit Trading Game**! This is a fun and interactive game where 
 
 ```
 fruit-trading-game/
-├── public/
-│   ├── index.html       # Main HTML file
-│   ├── styles.css       # Styles for the game
 ├── src/
-│   ├── game.ts          # Main game logic
+│   ├── game.py          # Main game logic
+│   ├── game.ts          # TypeScript version of the game logic
 │   ├── models/          # Data models
-│   │   └── fruit.ts     # Fruit model
+│   │   ├── fruit.py     # Fruit model (Python)
+│   │   └── fruit.ts     # Fruit model (TypeScript)
 │   ├── services/        # Business logic
-│   │   └── tradingService.ts
-│   ├── types/           # Type definitions
-│   │   └── index.ts
+│   │   ├── trading_service.py  # Trading service (Python)
+│   │   └── tradingService.ts   # Trading service (TypeScript)
 │   ├── utils/           # Utility functions
-│   │   └── helpers.ts
-├── package.json         # Project metadata and dependencies
+│   │   ├── helpers.py   # Helper functions (Python)
+│   │   └── helpers.ts   # Helper functions (TypeScript)
+├── public/
+│   ├── index.html       # Frontend entry point
+│   ├── styles.css       # Styling for the game
+├── requirements.txt     # Python dependencies
+├── package.json         # Node.js dependencies
 ├── tsconfig.json        # TypeScript configuration
 ├── README.md            # Project documentation
 ```
 
 ---
 
-## ASCII Art for Fruits
-
-Here are some ASCII art representations of the fruits used in the game:
-
-- Apple:
-```
-   ,--./,-.
-  / #      \
- |          |
-  \        / 
-   `._,._,'
-```
-
-- Banana:
-```
-   _
-  //\
- ||  \
- ||   `-.
-  \\     `-.
-   `-._     `-.
-       `-._    `-.
-           `-._.-'
-```
-
-- Orange:
-```
-   .-""""-.
-  /        \
- /          \
- |,  .-.  .-.  ,|
- | )(_o/  \o_)( |
- |/     /\     \|
- (_     ^^     _)
-  \__|IIIIII|__/
-   `--'IIIIII'--'
-```
-
-These ASCII arts are displayed in the game at the end of each day to enhance the user experience.
-
----
-
 ## Contributing
 
-Contributions are welcome! Feel free to open issues or submit pull requests.
+Contributions are welcome! To contribute:
+
+1. Fork the repository.
+2. Create a new branch for your feature or bug fix:
+   ```bash
+   git checkout -b feature-name
+   ```
+3. Commit your changes:
+   ```bash
+   git commit -m "Add feature-name"
+   ```
+4. Push to your branch:
+   ```bash
+   git push origin feature-name
+   ```
+5. Open a pull request.
 
 ---
 
