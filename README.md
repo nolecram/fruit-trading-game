@@ -2,26 +2,45 @@
 
 Welcome to the **Fruit Trading Game**! This fun and interactive game allows you to trade fruits over 30 days to maximize your profits. Each day, fruit prices fluctuate, and random events can influence the market. Can you make the most money by the end of the game?
 
-![Fruit Trading Game](https://i.imgur.com/exampleimage.png)
+[![Game Status](https://img.shields.io/badge/status-active-success.svg)](https://shields.io/)
+[![Platform](https://img.shields.io/badge/platform-web-blue.svg)](https://shields.io/)
+[![Trading Days](https://img.shields.io/badge/trading%20days-30-orange.svg)](https://shields.io/)
+[![Version](https://img.shields.io/badge/version-1.0.0-green.svg)](https://shields.io/)
 
 ## How to Play
 
 1. **Objective**: Start with $100 and trade fruits over 30 days to maximize your profits.
 2. **Daily Actions**:
    - Observe the daily fruit prices and special events
-   - Buy or sell fruits based on the market conditions
+   - Use market tips to make informed trading decisions
+   - Buy low and sell high to maximize profits
    - Watch out for random events that can influence prices or your money
 3. **End of Game**: The game ends after 30 days, with your final score being the amount of money you have.
 
 ## Features
 
-- **Dynamic Pricing**: Fruit prices change daily with a ±20% variation.
-- **Special Events**: Random events like storms, bumper harvests, lottery wins, or taxes influence prices or your money.
-- **Economic Impact Display**: Clear presentation of how events affect your finances.
-- **Victory/Loss Screens**: Engaging animations when you win or lose the game.
-- **Background Music**: Fun tunes to enjoy while trading fruits.
-- **Responsive Design**: Plays well on various screen sizes.
-- **Cross-Platform**: Runs on macOS, Linux, and Windows.
+- **Dynamic Pricing**: Fruit prices change daily with a ±20% variation
+- **Market Analysis**: Price trend indicators and historical price tracking
+- **Trading Tips**: Smart market insights and trading recommendations
+- **Achievement System**: Unlock achievements for various trading milestones:
+  - 🏆 Fruit Baron: Own 50 of any fruit at once
+  - 💰 Profit Master: Make $100 profit in a single trade
+  - 📊 Diverse Portfolio: Own all types of fruits
+  - 🎯 Lucky Streak: Get 3 positive events in a row
+  - 💪 Market Survivor: Recover from having less than $50
+- **Special Events**: Random events like storms, bumper harvests, lottery wins, or taxes
+- **Economic Impact Display**: Clear visualization of event effects on prices and money
+- **Price Trends**: Visual indicators (↗️↘️) showing market movements
+- **Sound System**:
+  - Background music with multiple tracks
+  - Volume controls and sound test functionality
+  - Music customization options
+- **Visual Feedback**:
+  - Achievement popups with animations
+  - Color-coded price changes
+  - Interactive inventory items
+  - Victory/Loss animations
+- **Responsive Design**: Plays well on various screen sizes
 
 ## Installation & Running
 
@@ -45,6 +64,11 @@ Welcome to the **Fruit Trading Game**! This fun and interactive game allows you 
    npm run web
    ```
 
+   For development with hot-reloading:
+   ```bash
+   npm run web:dev
+   ```
+
 5. Open your browser and navigate to:
    ```
    http://localhost:8080
@@ -60,28 +84,37 @@ fruit-trading-game/
 │   ├── audio/            # Background music files
 │   │   └── fallback.mp3  # Fallback audio file
 │   └── scripts/
-│       └── game.js       # Main game logic for web version
-├── src/                  # Source code
-│   ├── game.ts           # TypeScript version
+│       └── game.js       # Main game logic
+├── src/                  # TypeScript source code
+│   ├── game.ts           # Game entry point
 │   ├── models/           # Data models
 │   ├── services/         # Business logic
 │   ├── types/            # TypeScript type definitions
 │   └── utils/            # Utility functions
 ├── package.json          # Node.js dependencies
-├── tsconfig.json         # TypeScript configuration
-└── README.md             # This documentation
+└── tsconfig.json         # TypeScript configuration
 ```
 
 ## Controls & Gameplay
 
-- **Special Events**: Display at the beginning of each day with economic impact information
-- **Buy/Sell**: Use the blue buttons to trade fruits
-- **Background Music**: Toggle music using controls in the bottom-right corner
-- **Victory/Loss**: Experience animations based on your final money amount
+- **Market Analysis**: Watch price trends and follow market tips for better trading
+- **Trading**: Use the blue buttons to buy and sell fruits
+- **Events**: Special events display at the start of each day with economic impact information
+- **Achievements**: Unlock special achievements through strategic trading
+- **Music Controls**: 
+  - Toggle music with play/pause
+  - Adjust volume
+  - Change tracks by clicking the game title
+  - Test audio system with built-in diagnostics
+- **Price History**: Track historical prices to make informed decisions
 
 ## Technical Implementation
 
-The game is implemented in **JavaScript/TypeScript** and features modern CSS with animations, responsive design, and interactive elements.
+The game is implemented in **TypeScript/JavaScript** with a focus on modern web technologies:
+- TypeScript for type-safe code
+- Modern CSS with animations and responsive design
+- Web Audio API for sound management
+- DOM manipulation for dynamic UI updates
 
 ## Contributing
 

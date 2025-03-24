@@ -49,6 +49,18 @@ class Game {
             { description: "You won the lottery! Money increased by 15%.", moneyEffect: 1.15 },
             { description: "You had to pay unexpected taxes. Money decreased by 15%.", moneyEffect: 0.85 }
         ];
+        this.achievements = {
+            fruitBaron: { name: "Fruit Baron", description: "Own 50 of any fruit at once", earned: false },
+            profitMaster: { name: "Profit Master", description: "Make $100 profit in a single trade", earned: false },
+            diversePortfolio: { name: "Diverse Portfolio", description: "Own all types of fruits", earned: false },
+            luckyStreak: { name: "Lucky Streak", description: "Get 3 positive events in a row", earned: false },
+            marketCrash: { name: "Market Survivor", description: "Recover from having less than $50", earned: false }
+        };
+        this.positiveEventStreak = 0;
+        this.priceHistory = new Map();
+        this.tradingService.getInventory().forEach((_, fruit) => {
+            this.priceHistory.set(fruit, []);
+        });
     }
 
     start() {
@@ -95,6 +107,20 @@ class Game {
         
         dailyPrompt.style.display = 'block';
         document.getElementById('next-day-button').style.display = 'inline-block';
+
+        // Show price trends
+        this.tradingService.getInventory().forEach((fruit, name) => {
+            const history = this.priceHistory.get(name) || [];
+            if (history.length >= 2) {
+                const trend = this.calculateTrend([history[history.length - 2], fruit.price]);
+                const trendIndicator = document.createElement('span');
+                trendIndicator.className = `market-trend ${trend > 0 ? 'trend-up' : 'trend-down'}`;
+                const priceElement = document.querySelector(`#market-inventory-list li[data-name="${name}"]`);
+                if (priceElement) {
+                    priceElement.appendChild(trendIndicator);
+                }
+            }
+        });
     }
 
     nextDay() {
@@ -146,6 +172,15 @@ class Game {
         if (event.moneyEffect) {
             this.money = parseFloat((this.money * event.moneyEffect).toFixed(2));
         }
+
+        if (event.effect > 1 || event.moneyEffect > 1) {
+            this.positiveEventStreak++;
+            if (this.positiveEventStreak >= 3 && !this.achievements.luckyStreak.earned) {
+                this.unlockAchievement('luckyStreak');
+            }
+        } else {
+            this.positiveEventStreak = 0;
+        }
     }
 
     updateMarketInventory() {
@@ -159,6 +194,14 @@ class Game {
             const randomQuantity = Math.floor(Math.random() * 5) + 1;
             fruit.quantity += randomChange * randomQuantity;
             if (fruit.quantity < 0) fruit.quantity = 0;
+        });
+
+        // Update price history
+        this.tradingService.getInventory().forEach((fruit, name) => {
+            const history = this.priceHistory.get(name) || [];
+            history.push(fruit.price);
+            if (history.length > 10) history.shift(); // Keep last 10 days
+            this.priceHistory.set(name, history);
         });
     }
 
@@ -192,6 +235,12 @@ class Game {
         const currentQuantity = this.userInventory.get(fruitName) || 0;
         this.userInventory.set(fruitName, currentQuantity + quantity);
         
+        // Check for Profit Master achievement
+        const profit = fruit.price * quantity;
+        if (profit >= 100 && !this.achievements.profitMaster.earned) {
+            this.unlockAchievement('profitMaster');
+        }
+        this.checkAchievements();
         this.updateUI();
     }
 
@@ -249,6 +298,12 @@ class Game {
             listItem.setAttribute('data-price', fruit.price);
             marketInventoryList.appendChild(listItem);
         });
+
+        // Add market tips
+        const tips = this.generateMarketTip();
+        const tipsContainer = document.getElementById('market-tips') || this.createTipsContainer();
+        tipsContainer.innerHTML = '<h3>Market Tips</h3>' + 
+            tips.map(tip => `<div class="tip">${tip}</div>`).join('');
     }
 
     stop() {
@@ -274,6 +329,92 @@ class Game {
             lossMoney.textContent = `You ended with $${this.money.toFixed(2)}, losing $${(100 - this.money).toFixed(2)}.`;
             lossPage.style.display = 'block';
         }
+    }
+
+    checkAchievements() {
+        // Check Fruit Baron
+        this.userInventory.forEach((quantity, fruit) => {
+            if (quantity >= 50 && !this.achievements.fruitBaron.earned) {
+                this.unlockAchievement('fruitBaron');
+            }
+        });
+
+        // Check Diverse Portfolio
+        let hasAllFruits = true;
+        this.userInventory.forEach((quantity) => {
+            if (quantity === 0) hasAllFruits = false;
+        });
+        if (hasAllFruits && !this.achievements.diversePortfolio.earned) {
+            this.unlockAchievement('diversePortfolio');
+        }
+
+        // Check Market Survivor
+        if (this.money < 50 && !this.achievements.marketCrash.earned) {
+            this.unlockAchievement('marketCrash');
+        }
+    }
+
+    unlockAchievement(achievementId) {
+        if (!this.achievements[achievementId].earned) {
+            this.achievements[achievementId].earned = true;
+            const achievementElement = document.createElement('div');
+            achievementElement.className = 'achievement-popup';
+            achievementElement.innerHTML = `
+                🏆 Achievement Unlocked!
+                <strong>${this.achievements[achievementId].name}</strong>
+                ${this.achievements[achievementId].description}
+            `;
+            document.body.appendChild(achievementElement);
+            setTimeout(() => achievementElement.remove(), 5000);
+        }
+    }
+
+    generateMarketTip() {
+        const tips = [];
+        this.tradingService.getInventory().forEach((fruit, name) => {
+            const history = this.priceHistory.get(name) || [];
+            if (history.length >= 3) {
+                const trend = this.calculateTrend(history.slice(-3));
+                if (trend > 0.1) {
+                    tips.push(`📈 ${name} prices are trending up - consider buying!`);
+                } else if (trend < -0.1) {
+                    tips.push(`📉 ${name} prices are trending down - good time to sell!`);
+                }
+            }
+            // Add historical low/high tips
+            if (fruit.price <= Math.min(...history)) {
+                tips.push(`💡 ${name} is at a historical low price!`);
+            } else if (fruit.price >= Math.max(...history)) {
+                tips.push(`💡 ${name} is at a historical high price!`);
+            }
+        });
+
+        // Add random market wisdom
+        const wisdom = [
+            "🌟 Diversifying your inventory can help manage risk!",
+            "💼 Buy low, sell high is the golden rule!",
+            "⏰ Remember to watch for special events that affect prices!",
+            "🎯 Set profit goals for each trade!",
+            "🔄 Don't be afraid to hold onto inventory for better prices!"
+        ];
+        tips.push(wisdom[Math.floor(Math.random() * wisdom.length)]);
+        
+        return tips;
+    }
+
+    calculateTrend(prices) {
+        if (prices.length < 2) return 0;
+        const first = prices[0];
+        const last = prices[prices.length - 1];
+        return (last - first) / first;
+    }
+
+    createTipsContainer() {
+        const container = document.createElement('div');
+        container.id = 'market-tips';
+        container.className = 'market-tips';
+        document.getElementById('game-container').appendChild(container);
+        return container;
     }
 }
 

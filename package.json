@@ -1,13 +1,16 @@
 {
   "name": "fruit-trading-game",
   "version": "1.0.0",
-  "description": "A fun fruit trading game where players can buy and sell fruits to maximize profits over 30 days.",
+  "description": "A fun fruit trading game where players can buy and sell fruits to maximize profits over 30 days. Features achievements, market analysis, and dynamic events.",
   "main": "src/game.ts",
   "scripts": {
     "start": "ts-node src/game.ts",
     "build": "tsc",
     "web": "http-server public",
-    "test": "echo \"No tests specified\" && exit 0"
+    "web:dev": "http-server public -c-1",
+    "test": "echo \"No tests specified\" && exit 0",
+    "clean": "rm -rf dist/*",
+    "prebuild": "npm run clean"
   },
   "dependencies": {
     "typescript": "^5.1.6",
@@ -17,6 +20,13 @@
     "@types/node": "^20.4.5",
     "http-server": "^14.1.1"
   },
+  "keywords": [
+    "game",
+    "trading",
+    "fruits",
+    "typescript",
+    "web-game"
+  ],
   "author": "Marco Celon",
   "license": "MIT",
   "engines": {
