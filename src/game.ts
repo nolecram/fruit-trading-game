@@ -1,5 +1,39 @@
 // This file is the entry point of the game. It initializes the game logic and manages the game loop.
 
+class TradingService {
+    private inventory: Map<string, { price: number, quantity: number }>;
+
+    constructor() {
+        this.inventory = new Map([
+            ['Apple', { price: 1.0, quantity: 10 }],
+            ['Banana', { price: 1.2, quantity: 8 }],
+            ['Orange', { price: 0.8, quantity: 15 }],
+        ]);
+    }
+
+    public getInventory(): Map<string, { price: number, quantity: number }> {
+        return this.inventory;
+    }
+
+    public buyFruit(name: string, quantity: number, price: number): boolean {
+        const fruit = this.inventory.get(name);
+        if (fruit && fruit.quantity >= quantity) {
+            fruit.quantity -= quantity;
+            return true;
+        }
+        return false;
+    }
+
+    public sellFruit(name: string, quantity: number, price: number): boolean {
+        const fruit = this.inventory.get(name);
+        if (fruit) {
+            fruit.quantity += quantity;
+            return true;
+        }
+        return false;
+    }
+}
+
 class Game {
     private isRunning: boolean;
     private daysLeft: number;

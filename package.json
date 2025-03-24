@@ -1,20 +1,25 @@
 {
   "name": "fruit-trading-game",
   "version": "1.0.0",
-  "description": "A simple fruit trading game where players can buy and sell fruits.",
+  "description": "A fun fruit trading game where players can buy and sell fruits to maximize profits over 30 days.",
   "main": "src/game.ts",
   "scripts": {
     "start": "ts-node src/game.ts",
     "build": "tsc",
+    "web": "http-server public",
     "test": "echo \"No tests specified\" && exit 0"
   },
   "dependencies": {
-    "typescript": "^4.5.4",
-    "ts-node": "^10.4.0"
+    "typescript": "^5.1.6",
+    "ts-node": "^10.9.1"
   },
   "devDependencies": {
-    "@types/node": "^16.11.7"
+    "@types/node": "^20.4.5",
+    "http-server": "^14.1.1"
   },
-  "author": "Your Name",
-  "license": "MIT"
+  "author": "Marco Celon",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  }
 }

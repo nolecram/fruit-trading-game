@@ -1,1 +1,3 @@
 # Python dependencies
+# Required for running the console version of the game
+time>=0.0.1  # Built-in, but listed for clarity

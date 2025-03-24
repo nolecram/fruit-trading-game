@@ -5,26 +5,651 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fruit Trading Game</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            font-size: 18px; /* Increased base font size */
+        }
+
+        .button-group {
+            margin: 15px 0;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .button-group button {
+            padding: 12px 24px; /* Larger buttons */
+            background-color: #1e88e5;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 18px; /* Larger font */
+        }
+        
+        .button-group button:hover {
+            background-color: #1565c0;
+        }
+        
+        #event-display {
+            margin: 20px auto;
+            padding: 15px;
+            background-color: #ff9800;
+            border: 1px solid #e65100;
+            border-radius: 5px;
+            font-weight: bold;
+            color: #fff;
+            max-width: 80%;
+            font-size: 20px;
+        }
+        
+        /* 3D Title Effect with Rainbow Animation */
+        .welcome-title-3d {
+            font-size: 4rem;
+            font-weight: bold;
+            text-shadow: 
+                0 1px 0 #cccccc, 
+                0 2px 0 #c9c9c9, 
+                0 3px 0 #bbb, 
+                0 4px 0 #b9b9b9, 
+                0 5px 0 #aaa, 
+                0 6px 1px rgba(0,0,0,.1), 
+                0 0 5px rgba(0,0,0,.1), 
+                0 1px 3px rgba(0,0,0,.3), 
+                0 3px 5px rgba(0,0,0,.2), 
+                0 5px 10px rgba(0,0,0,.25), 
+                0 10px 10px rgba(0,0,0,.2), 
+                0 20px 20px rgba(0,0,0,.15);
+            margin-bottom: 2rem;
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            animation: 
+                title-animation 3s infinite alternate,
+                rainbow-colors 8s linear infinite;
+            transition: transform 0.3s;
+        }
+        
+        @keyframes rainbow-colors {
+            0% { background-color: #ff0000; background-image: linear-gradient(45deg, #ff0000, #ff9900); }
+            14% { background-color: #ff9900; background-image: linear-gradient(45deg, #ff9900, #ffff00); }
+            28% { background-color: #ffff00; background-image: linear-gradient(45deg, #ffff00, #33cc33); }
+            42% { background-color: #33cc33; background-image: linear-gradient(45deg, #33cc33, #3399ff); }
+            57% { background-color: #3399ff; background-image: linear-gradient(45deg, #3399ff, #6633cc); }
+            71% { background-color: #6633cc; background-image: linear-gradient(45deg, #6633cc, #cc33cc); }
+            85% { background-color: #cc33cc; background-image: linear-gradient(45deg, #cc33cc, #ff0066); }
+            100% { background-color: #ff0066; background-image: linear-gradient(45deg, #ff0066, #ff0000); }
+        }
+        
+        @keyframes title-animation {
+            from { transform: perspective(400px) rotateX(5deg) rotateY(-5deg); }
+            to { transform: perspective(400px) rotateX(5deg) rotateY(5deg); }
+        }
+        
+        .welcome-title-3d:hover {
+            transform: scale(1.05);
+        }
+
+        #landing-page, #game-container, #daily-prompt, #victory-page, #loss-page {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        #landing-page {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 85vh; /* Make it take up most of the viewport height */
+            margin: 0 auto;
+        }
+
+        .rules {
+            text-align: left;
+            display: inline-block;
+            margin: 30px auto;
+            font-size: 20px;
+            max-width: 600px;
+        }
+
+        #start-game-button {
+            padding: 15px 30px;
+            background-color: #1e88e5;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 20px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+            transition: transform 0.2s, background-color 0.2s;
+            /* Ensure it's in the center */
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .copyright {
+            margin-top: auto; /* Push to the bottom of the flex container */
+            padding-top: 20px;
+            font-size: 14px;
+            color: #777;
+        }
+
+        #inventory-list, #market-inventory-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        #inventory-list li, #market-inventory-list li {
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            font-size: 18px;
+        }
+
+        #game-info p {
+            font-size: 22px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .copyright {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #777;
+        }
+        
+        /* Victory/Loss Pages */
+        @keyframes celebrate {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes sadShake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+        
+        #victory-page, #loss-page {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        #victory-page h1 {
+            color: #4caf50;
+            animation: celebrate 1s ease-in-out infinite;
+            font-size: 3rem;
+        }
+        
+        #loss-page h1 {
+            color: #f44336;
+            animation: sadShake 2s ease-in-out infinite;
+            font-size: 3rem;
+        }
+        
+        .emoji {
+            font-size: 8rem;
+            margin: 1rem 0;
+        }
+        
+        .replay-button {
+            background-color: #1e88e5;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 15px 30px;
+            font-size: 20px;
+            cursor: pointer;
+            margin-top: 2rem;
+        }
+        
+        .replay-button:hover {
+            background-color: #1565c0;
+            transform: scale(1.05);
+        }
+        
+        /* Enhanced Music controls */
+        .music-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 100;
+            background-color: rgba(30, 136, 229, 0.9);
+            padding: 10px 20px;
+            border-radius: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            color: white;
+        }
+        
+        .music-controls:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .music-controls button {
+            background-color: white;
+            color: #1e88e5;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 24px;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .music-controls button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        #music-status {
+            font-size: 16px;
+            font-weight: bold;
+            margin-left: 10px;
+            animation: bounce 1s infinite;
+            white-space: nowrap;
+        }
+        
+        /* Sound test dialog */
+        .sound-test-dialog {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            max-width: 500px;
+            width: 90%;
+            display: none;
+        }
+        
+        .sound-test-dialog h2 {
+            margin-top: 0;
+            color: #1e88e5;
+        }
+        
+        .sound-test-dialog button {
+            background-color: #1e88e5;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            margin: 10px 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .sound-test-dialog button:hover {
+            background-color: #1565c0;
+        }
+        
+        .sound-test-dialog #volume-slider {
+            width: 100%;
+            margin: 15px 0;
+        }
+        
+        .sound-test-results {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+            text-align: left;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Welcome to the Fruit Trading Game!</h1>
-    </header>
     <main>
-        <div id="game-container">
+        <div id="landing-page">
+            <h1 class="welcome-title-3d">Welcome to the Fruit Trading Game!</h1>
+            <div class="rules">
+                <p>Rules of the Game:</p>
+                <ul>
+                    <li>You start with $100 and 30 days to trade fruits.</li>
+                    <li>Fruit prices change daily, so buy low and sell high!</li>
+                    <li>Random events may affect prices or your money.</li>
+                    <li>Your goal is to maximize your profit by the end of 30 days.</li>
+                </ul>
+            </div>
+            <button id="start-game-button">Start the Game</button>
+            <p class="copyright">&copy; 2025 Fruit Trading Game</p>
+        </div>
+
+        <div id="game-container" style="display: none;">
             <div id="game-info">
                 <p id="money">Money: $100</p>
                 <p id="days-left">Days Left: 30</p>
             </div>
+            <div id="event-display">No events yet</div>
             <div id="inventory">
                 <h2>Inventory</h2>
                 <ul id="inventory-list"></ul>
             </div>
+            <div id="market-inventory">
+                <h2>Market Inventory</h2>
+                <ul id="market-inventory-list"></ul>
+            </div>
+        </div>
+
+        <div id="daily-prompt" style="display: none;">
+            <h2>What would you like to do today?</h2>
+            <div class="button-group">
+                <button id="buy-button">Buy</button>
+                <button id="sell-button">Sell</button>
+                <button id="next-day-button">Next Day</button>
+            </div>
+        </div>
+        
+        <!-- Victory page -->
+        <div id="victory-page">
+            <h1>Victory!</h1>
+            <div class="emoji">🎉</div>
+            <p>Congratulations! You've successfully made a profit in the fruit trading market!</p>
+            <p id="victory-money"></p>
+            <button class="replay-button" id="replay-button-victory">Play Again</button>
+        </div>
+        
+        <!-- Loss page -->
+        <div id="loss-page">
+            <h1>Game Over</h1>
+            <div class="emoji">😢</div>
+            <p>Better luck next time! You weren't able to make a profit this time.</p>
+            <p id="loss-money"></p>
+            <button class="replay-button" id="replay-button-loss">Try Again</button>
         </div>
     </main>
-    <footer>
-        <p>&copy; 2023 Fruit Trading Game</p>
-    </footer>
-    <script src="../src/game.ts" type="module"></script>
+    
+    <!-- Background Music -->
+    <audio id="background-music" preload="auto">
+        <!-- Add fallback to local audio file -->
+        <source src="https://www.chosic.com/wp-content/uploads/2020/07/The-Bards-Tale.mp3" type="audio/mp3">
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mp3">
+        <source src="audio/fallback.mp3" type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
+    
+    <!-- Sound test audio -->
+    <audio id="test-sound" src="https://assets.codepen.io/3685267/success-sound-effect.mp3" preload="auto"></audio>
+    
+    <!-- Enhanced music controls -->
+    <div class="music-controls">
+        <button id="music-play" title="Play Music">▶️</button>
+        <button id="music-pause" title="Pause Music" style="display: none;">⏸️</button>
+        <button id="music-volume-up" title="Volume Up">🔊</button>
+        <button id="music-volume-down" title="Volume Down">🔉</button>
+        <span id="music-status">Click to play music</span>
+        <button id="sound-test-button" title="Test Sound" style="margin-left: 10px;">🔍</button>
+    </div>
+    
+    <!-- Sound test dialog -->
+    <div class="overlay" id="overlay"></div>
+    <div class="sound-test-dialog" id="sound-test-dialog">
+        <h2>Sound Test</h2>
+        <p>Let's troubleshoot your audio issues:</p>
+        
+        <div>
+            <label for="volume-slider">Volume:</label>
+            <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="1">
+            <span id="volume-value">100%</span>
+        </div>
+        
+        <button id="test-sound-button">Play Test Sound</button>
+        <button id="test-music-button">Test Background Music</button>
+        
+        <div class="sound-test-results" id="sound-test-results">
+            <p>Status: Ready to test</p>
+        </div>
+        
+        <p>Common fixes:</p>
+        <ul>
+            <li>Check if your device volume is not muted</li>
+            <li>Try using headphones</li>
+            <li>Allow browser permission for audio</li>
+            <li>Restart your browser</li>
+        </ul>
+        
+        <button id="close-test-dialog">Close</button>
+    </div>
+    
+    <script src="scripts/game.js"></script>
+    <script>
+        // Background music controls
+        const backgroundMusic = document.getElementById('background-music');
+        const testSound = document.getElementById('test-sound');
+        const playButton = document.getElementById('music-play');
+        const pauseButton = document.getElementById('music-pause');
+        const volumeUpButton = document.getElementById('music-volume-up');
+        const volumeDownButton = document.getElementById('music-volume-down');
+        const musicStatus = document.getElementById('music-status');
+        const soundTestButton = document.getElementById('sound-test-button');
+        const soundTestDialog = document.getElementById('sound-test-dialog');
+        const overlay = document.getElementById('overlay');
+        const closeTestDialogButton = document.getElementById('close-test-dialog');
+        const testSoundButton = document.getElementById('test-sound-button');
+        const testMusicButton = document.getElementById('test-music-button');
+        const volumeSlider = document.getElementById('volume-slider');
+        const volumeValue = document.getElementById('volume-value');
+        const soundTestResults = document.getElementById('sound-test-results');
+        
+        let isMusicPlaying = false;
+        
+        // Add some fun sound effects
+        const funnyBackgroundMusic = [
+            "https://www.chosic.com/wp-content/uploads/2020/07/The-Bards-Tale.mp3",
+            "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+            "https://www.chosic.com/wp-content/uploads/2020/05/Komiku_-_12_-_Bicycle.mp3",
+            "https://www.chosic.com/wp-content/uploads/2021/01/Happy-Ukulele-Background-Music.mp3"
+        ];
+        
+        // Set random funny music
+        function setRandomFunnyMusic() {
+            const randomIndex = Math.floor(Math.random() * funnyBackgroundMusic.length);
+            backgroundMusic.src = funnyBackgroundMusic[randomIndex];
+            
+            // Add error handling for external sources
+            backgroundMusic.onerror = function() {
+                console.log("Error loading external music, falling back to local file");
+                backgroundMusic.src = "audio/fallback.mp3";
+            };
+        }
+        
+        // Initialize with a random funny music track
+        setRandomFunnyMusic();
+        
+        // Set initial volume
+        backgroundMusic.volume = 1.0;
+        testSound.volume = 1.0;
+        
+        // Update volume display
+        volumeSlider.addEventListener('input', function() {
+            const volume = this.value;
+            backgroundMusic.volume = volume;
+            testSound.volume = volume;
+            volumeValue.textContent = `${Math.round(volume * 100)}%`;
+        });
+        
+        // Show music status with animation
+        function showMusicStatus(message) {
+            musicStatus.textContent = message;
+            musicStatus.style.display = 'block';
+        }
+        
+        // Play button functionality with better error handling
+        playButton.addEventListener('click', function() {
+            // Create a user interaction to help with autoplay restrictions
+            playWithErrorHandling();
+        });
+        
+        // Improved play function with error handling
+        function playWithErrorHandling() {
+            const playPromise = backgroundMusic.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    // Playback started successfully
+                    isMusicPlaying = true;
+                    showMusicStatus('🎵 Music playing! 🎵');
+                    playButton.style.display = 'none';
+                    pauseButton.style.display = 'block';
+                    
+                    // Log success for debugging
+                    console.log("Audio is playing successfully");
+                    
+                }).catch(error => {
+                    // Autoplay was prevented or another error occurred
+                    console.error("Audio play failed:", error);
+                    showMusicStatus('⚠️ Click again to play');
+                    
+                    // Open sound test dialog on error
+                    openSoundTestDialog();
+                });
+            }
+        }
+        
+        pauseButton.addEventListener('click', function() {
+            backgroundMusic.pause();
+            isMusicPlaying = false;
+            showMusicStatus('Music paused');
+            playButton.style.display = 'block';
+            pauseButton.style.display = 'none';
+        });
+        
+        volumeUpButton.addEventListener('click', function() {
+            backgroundMusic.volume = Math.min(1, backgroundMusic.volume + 0.1);
+            testSound.volume = backgroundMusic.volume;
+            volumeSlider.value = backgroundMusic.volume;
+            volumeValue.textContent = `${Math.round(backgroundMusic.volume * 100)}%`;
+            showMusicStatus(`Volume: ${Math.round(backgroundMusic.volume * 100)}%`);
+        });
+        
+        volumeDownButton.addEventListener('click', function() {
+            backgroundMusic.volume = Math.max(0, backgroundMusic.volume - 0.1);
+            testSound.volume = backgroundMusic.volume;
+            volumeSlider.value = backgroundMusic.volume;
+            volumeValue.textContent = `${Math.round(backgroundMusic.volume * 100)}%`;
+            showMusicStatus(`Volume: ${Math.round(backgroundMusic.volume * 100)}%`);
+        });
+        
+        // Sound test functionality
+        soundTestButton.addEventListener('click', openSoundTestDialog);
+        
+        function openSoundTestDialog() {
+            overlay.style.display = 'block';
+            soundTestDialog.style.display = 'block';
+            
+            // Update volume slider to match current volume
+            volumeSlider.value = backgroundMusic.volume;
+            volumeValue.textContent = `${Math.round(backgroundMusic.volume * 100)}%`;
+        }
+        
+        closeTestDialogButton.addEventListener('click', function() {
+            overlay.style.display = 'none';
+            soundTestDialog.style.display = 'none';
+        });
+        
+        testSoundButton.addEventListener('click', function() {
+            soundTestResults.innerHTML = '<p>Status: Testing sound...</p>';
+            
+            const testPlayPromise = testSound.play();
+            if (testPlayPromise !== undefined) {
+                testPlayPromise.then(() => {
+                    soundTestResults.innerHTML = '<p>Status: ✅ Test sound played successfully!</p>';
+                }).catch(error => {
+                    soundTestResults.innerHTML = `<p>Status: ❌ Test sound failed: ${error.message}</p>
+                        <p>This is likely due to browser autoplay restrictions. Try clicking the button again.</p>`;
+                });
+            }
+        });
+        
+        testMusicButton.addEventListener('click', function() {
+            soundTestResults.innerHTML = '<p>Status: Testing background music...</p>';
+            
+            const musicPlayPromise = backgroundMusic.play();
+            if (musicPlayPromise !== undefined) {
+                musicPlayPromise.then(() => {
+                    isMusicPlaying = true;
+                    playButton.style.display = 'none';
+                    pauseButton.style.display = 'block';
+                    soundTestResults.innerHTML = '<p>Status: ✅ Background music playing successfully!</p>';
+                }).catch(error => {
+                    soundTestResults.innerHTML = `<p>Status: ❌ Background music failed: ${error.message}</p>
+                        <p>This is likely due to browser autoplay restrictions. Try clicking the button again.</p>`;
+                });
+            }
+        });
+        
+        // Set up music for start page
+        document.getElementById('start-game-button').addEventListener('click', () => {
+            // If music is not already playing, try to play it
+            if (!isMusicPlaying) {
+                playWithErrorHandling();
+            }
+            
+            // Rest of the code for handling the game start
+            // ...existing code...
+        });
+        
+        // Add a fun feature - change music when title is clicked
+        document.querySelector('.welcome-title-3d').addEventListener('click', () => {
+            setRandomFunnyMusic();
+            if (isMusicPlaying) {
+                playWithErrorHandling();
+            }
+        });
+        
+        // Log audio capability for debugging
+        console.log("Audio elements supported:", !!document.createElement('audio').canPlayType);
+        
+        // Track audio loading state
+        backgroundMusic.addEventListener('loadeddata', function() {
+            console.log("Background music loaded successfully");
+        });
+        
+        backgroundMusic.addEventListener('error', function(e) {
+            console.error("Background music error:", e);
+        });
+    </script>
 </body>
 </html>
