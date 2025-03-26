@@ -1,0 +1,18 @@
+name: Fruit Trading Game
+title: Fruit Trading Game
+description: A fun fruit trading game where you can buy low and sell high!
+theme: jekyll-theme-cayman
+baseurl: ""
+url: ""
+exclude:
+  - src/
+  - node_modules/
+  - package.json
+  - package-lock.json
+  - tsconfig.json
+  - .eslintrc.json
+  - README.md
+  - .gitignore
+  - LICENSE
+include:
+  - public/ 
