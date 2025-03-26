@@ -1,13 +1,9 @@
 export class Fruit {
-    private name: string;
-    private price: number;
-    private quantity: number;
-
-    constructor(name: string, price: number, quantity: number) {
-        this.name = name;
-        this.price = price;
-        this.quantity = quantity;
-    }
+    constructor(
+        private name: string,
+        private price: number,
+        private quantity: number
+    ) {}
 
     public getName(): string {
         return this.name;

@@ -9,3 +9,9 @@ export interface Trade {
     quantity: number;
     totalPrice: number;
 }
+
+export interface Achievement {
+    name: string;
+    description: string;
+    earned: boolean;
+}
